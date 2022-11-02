@@ -4,6 +4,12 @@
 
 from bs4 import BeautifulSoup
 import requests
+import re
+
+title = None
+organizator = None
+szczegoly = None
+termin = None
 
 searching_topic = input('staz/konkurs/stypendium: ')
 
@@ -13,37 +19,40 @@ doc = BeautifulSoup(page.content, 'html.parser')
 
 page_text = list(doc.find(class_='page-numbers').next_siblings)
 pages = int(str(page_text[-4].text))
-print(pages)
-details_found = {}
-#
+
+informacje = {}
+
 for page in range(1, pages + 1):
     url = f'https://www.mojestypendium.pl/znajdz-{searching_topic}/page/{page}'
     page = requests.get(url)
     doc = BeautifulSoup(page.content, 'html.parser')
 
-    info = doc.find_all(class_='column first-col')  #Tytul, organizator
-    details = doc.find_all(class_='column second-col')#Rodzaj, grupa, zasieg, termin
+    div = doc.find(class_='columns col-80')
 
-    parent = info[0].parent
-    h2 = parent.find("h2")
-    print(h2.string)
+    for item in div:
 
-    anchor = doc.find(class_='hide-for-large anchor')
+        for i in div.find_all('h2', class_='title'):
+            title = i.text
 
-    for item in anchor: #Szukamy odnosnika do informacji na temat danego stypendia
-        parent = item.parent
-        if parent.name != 'a':
-            continue
-
-        link = parent['href']
+        for i in div.find_all('p', class_='organizator-title'):
+            organizator = i.text
 
 
-        result = info+details+link
-        details_found[item] = {"Informacje": result.replace("\n", '').replace("\r", '').replace('Więcej', '')}
+        for i in div.find_all(class_='fleft'):
+            j = list(i.next_siblings)
+            for k in j:
+                szczegoly = k.text
 
-    print(details_found[item])
+        for i in div.find_all('span', class_=''):
+            termin = i.text
+            print(termin)
 
-
-
+        informacje[item] = {
+                            'Tytuł': title,
+                            'Organizator': organizator,
+                            'Szczegóły': szczegoly,
+                            'Termin': termin
+                            }
+        print(informacje[item])
 
 
