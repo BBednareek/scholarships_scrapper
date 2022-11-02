@@ -31,28 +31,21 @@ for page in range(1, pages + 1):
 
     for item in div:
 
-        for i in div.find_all('h2', class_='title'):
-            title = i.text
+        try:
+            title = div.find(class_='title').string
+            organizator = div.find(class_='organizator-title').string
+            termin = div.find('span', class_='').string
 
-        for i in div.find_all('p', class_='organizator-title'):
-            organizator = i.text
+            informacje[item] = {
+                'Tytuł': title.replace("\n", '').replace("\r", ''),
+                'Organizator': organizator.replace("\n", '').replace("\r", '').strip(),
+                'Termin': termin.replace("\n", '').replace("\r", '').strip()
+            }
+        except:
+            pass
 
-
-        for i in div.find_all(class_='fleft'):
-            j = list(i.next_siblings)
-            for k in j:
-                szczegoly = k.text
-
-        for i in div.find_all('span', class_=''):
-            termin = i.text
-            print(termin)
-
-        informacje[item] = {
-                            'Tytuł': title,
-                            'Organizator': organizator,
-                            'Szczegóły': szczegoly,
-                            'Termin': termin
-                            }
-        print(informacje[item])
-
+    print(informacje[item]['Tytuł'])
+    print(informacje[item]['Organizator'])
+    print(informacje[item]['Termin'])
+    print('==============================')
 
