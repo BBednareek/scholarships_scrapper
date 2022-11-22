@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 from mojeStypendiumFunctions import *
 
+#p
+
 url = f"https://www.mojestypendium.pl/znajdz-stypendium"
 page = requests.get(url)
 doc = BeautifulSoup(page.content, 'html.parser')
