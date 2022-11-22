@@ -2,14 +2,13 @@ from bs4 import BeautifulSoup
 import requests
 from mojeStypendiumFunctions import *
 
-#p
-
 url = f"https://www.mojestypendium.pl/znajdz-stypendium"
 page = requests.get(url)
 doc = BeautifulSoup(page.content, 'html.parser')
 
 page_text = list(doc.find(class_='page-numbers').next_siblings)
 pages = int(page_text[-4].text)
+
 
 for page in range(1, pages + 1):
     url = f"https://www.mojestypendium.pl/znajdz-stypendium/page/{page}"
@@ -23,7 +22,6 @@ for page in range(1, pages + 1):
     organizator = doc.find_all(class_='organizator-title')
     for i in organizator:
         x = append_organizator(i.text.strip().replace('\\n', '').replace('\\r', ''))
-
 
     rodzaj = doc.find_all('div', class_='fleft', string="Rodzaj:")
     for i in rodzaj:
