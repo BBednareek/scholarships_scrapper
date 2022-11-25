@@ -12,7 +12,7 @@ if result:
     cursor.execute(query)
     conn.commit()
 
-    query = "CREATE TABLE konkursy (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, tytul varchar(500) NOT NULL, organizator varchar(100) NOT NULL, rodzaj varchar(50) NOT NULL, zasieg varchar(50) NOT NULL, grupa_docelowa varchar(100) NOT NULL, termin varchar(20) NOT NULL, link varchar(1000) NOT NULL)"
+    query = "CREATE TABLE konkursy (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, tytul varchar(500) NOT NULL, organizator varchar(100) NOT NULL, rodzaj varchar(50) NOT NULL, zasieg varchar(50) NOT NULL, grupa_docelowa varchar(100) NOT NULL, termin varchar(20) NOT NULL, link varchar(1000) NOT NULL, opis varchar(2500) NOT NULL)"
     cursor.execute(query)
     conn.commit()
     def appendKonkursy(tytul: str, organizator: str, rodzaj: str, zasieg: str, grupa: str, termin: str, link: str):
@@ -24,7 +24,7 @@ if result:
         except:
             print("Błąd")
 else:
-    query = "CREATE TABLE konkursy (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, tytul varchar(500) NOT NULL, organizator varchar(100) NOT NULL, rodzaj varchar(50) NOT NULL, zasieg varchar(50) NOT NULL, grupa_docelowa varchar(100) NOT NULL, termin varchar(20) NOT NULL, link varchar(1000) NOT NULL)"
+    query = "CREATE TABLE konkursy (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, tytul varchar(500) NOT NULL, organizator varchar(100) NOT NULL, rodzaj varchar(50) NOT NULL, zasieg varchar(50) NOT NULL, grupa_docelowa varchar(100) NOT NULL, termin varchar(20) NOT NULL, link varchar(1000) NOT NULL, opis varchar(2500) NOT NULL)"
     cursor.execute(query)
     conn.commit()
     def appendKonkursy(tytul: str, organizator: str, rodzaj: str, zasieg: str, grupa: str, termin: str, link: str):
