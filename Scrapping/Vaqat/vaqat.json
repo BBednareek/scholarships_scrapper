@@ -1,0 +1,29 @@
+[
+    {
+        "title": "Tourism Data Marketplace",
+        "description": "Conduct research on marketplaces that provide free or paid tourism sector data (e.g. tourists spending, number of tourists visits by country/destination, visitor satisfaction scores)\n\nData purchased should be received through APIs or tabular format (e.g. excel, csv)",
+        "application_deadline": "2022-03-24T00:00:00Z",
+        "start_date": "2022-03-25T00:00:00Z",
+        "end_date": "2022-04-01T00:00:00Z",
+        "cv": true,
+        "industries": null
+    },
+    {
+        "title": "Translation from Russia to English of an AR",
+        "description": "I'd like to have a summary of main figures in English of a Russian annual report. \n\nI'd like the student to only translate from p.19 (market analysis) to p.28 (Financial and economic indicators)\n\nLink to use: https://webcache.googleusercontent.com/search?q=cache:RlQedOTWsxYJ:https://kase.kz/files/emitters/ALTV/altvp_2021_rus.pdf&cd=2&hl=ru&ct=clnk&gl=uk ",
+        "application_deadline": "2023-01-03T23:00:00Z",
+        "start_date": "2023-01-05T23:00:00Z",
+        "end_date": "2023-01-05T23:00:00Z",
+        "cv": false,
+        "industries": null
+    },
+    {
+        "title": "Growth Hacking support",
+        "description": "- Followers on Instagram and Linkedin \n- Emails outreach (automation) \n- Blog Editing\n\nRequirements:\n- Attention to detail\n- Ability to solves problems on your own\n- Quick learner\n- Experience with Excel and Automations of some sort \n",
+        "application_deadline": "2023-01-13T08:00:00Z",
+        "start_date": "2023-01-15T08:00:00Z",
+        "end_date": "2023-01-31T08:00:00Z",
+        "cv": false,
+        "industries": null
+    }
+]

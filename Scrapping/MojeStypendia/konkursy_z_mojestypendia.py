@@ -1,4 +1,5 @@
-from Functions.MojeStypendium.createKonkursy import *
+from Scrapping.Functions.MojeStypendium.insertData import dodajKonkursMojeStypendia
+
 def konkursy_mojestypendia():
     from bs4 import BeautifulSoup
     import requests
@@ -17,28 +18,42 @@ def konkursy_mojestypendia():
         doc = BeautifulSoup(page.content, 'html.parser')
 
         #Materialy do scrapowania
-        tytul = doc.find_all(class_='title')
-        organizator = doc.find_all(class_='organizator-title')
-        rodzaj = doc.find_all('div', class_='fleft', string="Rodzaj:")
-        grupa = doc.find_all('span', class_='taxonomy-list w2')
-        zasieg = doc.find_all('div', class_='fleft', string="Zasięg:")
-        termin = doc.find_all('span', class_='content')
-        link = doc.find_all(class_='hide-for-large anchor')
+        tytuly = doc.find_all(class_='title')
+        organizatorzy = doc.find_all(class_='organizator-title')
+        tematyki = doc.find_all('div', class_='fleft', string="Rodzaj:")
+        odbiorcy = doc.find_all('span', class_='taxonomy-list w2')
+        zasiegi = doc.find_all('div', class_='fleft', string="Zasięg:")
+        terminy = doc.find_all('span', class_='content')
+        linki = doc.find_all(class_='hide-for-large anchor')
 
         #Przechodzimy przez kazdy element i wrzucamy go do bazy
-        for i in range(min(len(tytul), len(organizator))):
-            t = tytul[i].text.strip().replace('\\n', '').replace('\\r', '')
-            o = organizator[i].text.strip().replace('\\n', '').replace('\\r', '')
-            r = rodzaj[i].find_next().text.strip().replace('\\n', '').replace('\\r', '')
-            if re.findall("naukowe", r):
-                r = 'Naukowe'
+        for i in range(min(len(tytuly), len(organizatorzy))):
+            tytul = tytuly[i].text.strip().replace('\\n', '').replace('\\r', '')
+            organizator = organizatorzy[i].text.strip().replace('\\n', '').replace('\\r', '')
+            tematyka = tematyki[i].find_next().text.strip().replace('\\n', '').replace('\\r', '')
+
+            if re.findall("naukowe", tematyka):
+                tematyka = 'Naukowa'
             else:
-                r = 'Artystyczne'
-            g = grupa[i].text.strip().replace('\\n', '').replace('\\r', '')
-            z = zasieg[i].find_next().text.strip().replace('\\n', '').replace('\\r', '')
-            te = termin[i].find_next('span', class_='').text.strip().replace('\\n', '').replace('\\r', '')
-            l = link[i]['href'].strip().replace('\\n', '').replace('\\r', '')
+                tematyka = 'Artystyczna'
 
-            appendKonkursy(t, o, r, z, g, te, l)
+            odbiorca = odbiorcy[i].text.strip().replace('\\n', '').replace('\\r', '').capitalize().split(',')[0]
 
+            zasieg = zasiegi[i].find_next().text.strip().replace('\\n', '').replace('\\r', '').capitalize().split(',')[0]
+
+
+
+            termin = terminy[i].find_next('span', class_='').text.strip().replace('\\n', '').replace('\\r', '')
+            link = linki[i]['href'].strip().replace('\\n', '').replace('\\r', '')
+            kategoria = 'Konkurs'
+            img = 'assets/images/konkurs.svg'
+
+            sortowanie = termin[:2] + termin[3:5] + termin[6:]
+            url = f"{link}"
+            page = requests.get(url)
+            doc = BeautifulSoup(page.content, 'html.parser')
+
+            opis = doc.find('div', class_='').text
+
+            dodajKonkursMojeStypendia(kategoria, img, tytul, organizator, tematyka, zasieg, odbiorca, termin, link, opis, sortowanie)
 
