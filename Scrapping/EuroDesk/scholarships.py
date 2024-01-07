@@ -21,6 +21,7 @@ def scrape_page(url):
         deadline = deadlines[i].text.replace('\r','').replace('\n','').strip()
         
         grant_info = {
+            'From': 'Eurodesk',
             'Title': title,
             'Organizer': organizer,
             'Target Group': 'studenci',

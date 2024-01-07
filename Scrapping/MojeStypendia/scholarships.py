@@ -20,6 +20,7 @@ def scrape_page(url):
         
 
         scholarship = {
+            "From": "MojeStypendia",
             "Title": title,
             "Organizer": organizer,
             "Target Group": target_group,
