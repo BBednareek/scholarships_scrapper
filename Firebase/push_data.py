@@ -1,46 +1,75 @@
-import firebase_admin
-from firebase_admin import credentials, firestore
-import json
+from os import getenv
+from typing import List, Dict
+from firebase_admin.credentials import Certificate
+from firebase_admin import firestore, initialize_app
+from google.cloud.firestore_v1 import Client, CollectionReference, WriteBatch
+from utils.error_handler import error_handler
+from dotenv import load_dotenv
 
-def push_data():
-    # Initialize Firestore with your credentials from the environment variable
-    cred = credentials.Certificate("C:\Projects\scholarships-8b654-firebase-adminsdk-k46ev-88c20f7958.json")
-    firebase_admin.initialize_app(cred)
+@error_handler("send")
+def initialize_firestore(env_file: str = ".env") -> Client:
+    """
+    Loads env and initializes Firestore client.
 
-    # Access Firestore
-    db = firestore.client()
+    Args:
+        env_file (str): Path to .env file containing credentials.
 
-    # Read data from the JSON file
-    json_file_path = 'scholarships_data.json'  # Replace with the correct file path
-    try:
-        with open(json_file_path, 'r', encoding='utf-8') as file:
-            json_content = file.read()
-            data = json.loads(json_content)
+    Returns:
+        Client: Firestore client.
+    """
+    load_dotenv(dotenv_path=env_file)
+    cred_path: str | None = getenv("FIREBASE_CREDENTIAL_PATH")
+    if not cred_path:
+        raise ValueError("FIREBASE_CREDENTIAL_PATH not set")
+    cred: Certificate = Certificate(cred_path)
+    initialize_app(cred)
+    return firestore.client()
 
-        # Reference to 'scholarships' collection
-        scholarships_ref = db.collection('scholarships')
+@error_handler("send")
+def clear_collection(collection: CollectionReference) -> None:
+    """
+    Deletes all existing documents in the Firestore collection.
 
-        # Delete existing documents in 'scholarships' collection
-        existing_docs = scholarships_ref.stream()  # Fetch all documents in collection
-        c = 0
-        for doc in existing_docs:
-            doc.reference.delete()  # Delete each document
-            c+=1
-            if c%10 == 0:
-                print("Please wait, deleting existing data from cloud firestore...")
+    Args:
+        collection (CollectionReference): Target Firestore collection.
+    """
 
-        # Push new data to Firestore
-        c = 0
-        for entry in data:
-            doc_ref = scholarships_ref.document()
-            doc_ref.set(entry)  # Set each entry in the collection
+    for doc in collection.stream():
+        collection.document(doc.id).delete()
 
-            c+=1
-            if c%10 == 0:
-                print("Please wait, pushing data to cloud firestore...")
+@error_handler("send")
+def batch_upload(client: Client, collection: CollectionReference, data: List[Dict[str, str]], batch_size: int = 500) -> None:
+    """
+    Uploads scholarship data to Firestore in batches.
 
-        print("New data has been pushed to Firestore, replacing existing documents")
-    except Exception as e:
-        print('Error with pushing data:', e)
+    Args:
+        client (Client): Firestore client.
+        collection (CollectionReference): Collection to upload into.
+        data (List[Dict[str, str]]): List of scholarships.
+        batch_size (int): Max docs per batch commit.
+    """
+    batch: WriteBatch = client.batch()
+    count: int = 0
+    for entry in data:
+        batch.set(collection.document(), entry)
+        count += 1
+        if count >= batch_size:
+            batch.commit()
+            batch: WriteBatch = client.batch()
+            count = 0
+    if count:
+        batch.commit()
 
-push_data()
+@error_handler("send")
+def push_scholarship_data(data: List[Dict[str, str]]) -> None:
+    """
+    Pushes scholarship data to Firestore immediately (no local storage).
+
+    Args:
+        data (List[Dict[str, str]]): Scholarships to push.
+    """
+    client: Client = initialize_firestore()
+    coll: CollectionReference = client.collection("scholarships")
+    clear_collection(coll)
+    batch_upload(client, coll, data)
+    print(f"Pushed {len(data)} scholarships to Firestore.")

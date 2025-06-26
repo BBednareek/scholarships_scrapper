@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+
+# VSCode settings
+.vscode/
+
+# PyCharm
+.idea/
+
+# Environment variables
+.env
+.env.*
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Test / coverage output
+htmlcov/
+.tox/
+.nox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.pytest_cache/
+
+# Firebase credentials (security)
+*.json
+
+# Local output
+scholarships_data.json
