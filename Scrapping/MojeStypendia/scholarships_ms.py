@@ -73,17 +73,18 @@ class MojeStypendiaScraper:
 
     @staticmethod
     @error_handler("convert")
-    def parse_date(date_str: str) -> Optional[datetime]:
+    def parse_date(date_str: str) -> Optional[str]:
         """
-        Parses Polish-style date string to datetime object.
+        Parses date string to 'YYYY.MM.DD' format.
 
         Args:
             date_str (str): Date in format 'DD.MM.YYYY'.
 
         Returns:
-            Optional[datetime]: Parsed datetime or None.
+            Optional[str]: Reformatted date string or None.
         """
-        return datetime.strptime(date_str.strip(), "%d.%m.%Y")
+        dt: datetime = datetime.strptime(date_str.strip(), "%d.%m.%Y")
+        return dt.strftime("%Y.%m.%d")
 
     @error_handler("convert")
     def parse_scholarship_block(self, block: Tag, location: str) -> Dict[str, str]:
@@ -99,14 +100,14 @@ class MojeStypendiaScraper:
         """
         raw_date: str = block.find('span', class_='content').find_next('span', class_='').text.strip()
         return {
-            "From": "MojeStypendia",
-            "Title": block.find('h2', class_='title').text.strip(),
-            "Organizer": block.find('p', class_='organizator-title').text.strip(),
-            "Target Group": block.find_all('span', class_='taxonomy-list w2')[0].text.strip(),
-            "Deadline": self.parse_date(raw_date),
-            "Link": block.find('a', class_='hide-for-large anchor')['href'],
-            "Path": "assets/images/stypendium.svg",
-            "Location": location
+            "from": "MojeStypendia",
+            "title": block.find('h2', class_='title').text.strip(),
+            "organizer": block.find('p', class_='organizator-title').text.strip(),
+            "targetGroup": block.find_all('span', class_='taxonomy-list w2')[0].text.strip(),
+            "deadline": self.parse_date(raw_date),
+            "link": block.find('a', class_='hide-for-large anchor')['href'],
+            "path": "assets/images/stypendium.svg",
+            "location": location
         }
 
     @error_handler("fetch")

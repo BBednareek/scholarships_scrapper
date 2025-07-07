@@ -44,18 +44,25 @@ class EuroDeskScraper:
 
     @staticmethod
     @error_handler("convert")
-    def parse_date(date_str: str) -> Optional[datetime]:
+    def parse_date(date_str: str) -> Optional[str]:
         """
-        Parses a date string into datetime object.
+        Parses a date string into 'YYYY.MM.DD' format, returns 'stały nabór' if applicable,
+        and returns None for unknown formats.
 
         Args:
-            date_str (str): Date in format 'DD.MM.YYYY'.
+            date_str (str): Date in format 'DD.MM.YYYY' or text like 'stały nabór'.
 
         Returns:
-            Optional[datetime]: Parsed datetime or None.
+            Optional[str]: Reformatted date string, 'stały nabór', or None.
         """
+        clean_str = date_str.strip().lower()
+
+        if clean_str == "stały nabór":
+            return "stały nabór"
+
         try:
-            return datetime.strptime(date_str.strip(), "%d.%m.%Y")
+            dt = datetime.strptime(clean_str, "%d.%m.%Y")
+            return dt.strftime("%Y.%m.%d")
         except ValueError:
             return None
 
@@ -106,14 +113,14 @@ class EuroDeskScraper:
         parsed_deadline: datetime | None = self.parse_date(raw_date) if raw_date else None
 
         return {
-            "From": "Eurodesk",
-            "Title": title,
-            "Organizer": organizer,
-            "Target Group": "studenci",
-            "Deadline": parsed_deadline,
-            "Link": link,
-            "Path": "assets/images/stypendium.svg",
-            "Location": "Polska"
+            "from": "Eurodesk",
+            "title": title,
+            "organizer": organizer,
+            "targetGroup": "studenci",
+            "deadline": parsed_deadline,
+            "link": link,
+            "path": "assets/images/stypendium.svg",
+            "location": "Polska"
         }
 
     @error_handler("convert")
